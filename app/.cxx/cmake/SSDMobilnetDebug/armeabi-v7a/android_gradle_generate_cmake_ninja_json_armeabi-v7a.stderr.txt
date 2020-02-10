@@ -1,0 +1,7 @@
+dir: cmake_src: /home/sonct/dev/NCNNCam/app/src/main/jni imgutil_src: /home/sonct/dev/NCNNCam/app/src/main/jni ncnn_jni src: /home/sonct/dev/NCNNCam/app/src/main/jni/ncnn ANDROID_ABI: armeabi-v7a
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    SSD
+
+

@@ -1,0 +1,14 @@
+Executable : /home/sonct/Android/Sdk/cmake/3.6.4111459/bin/cmake
+arguments : 
+-H/home/sonct/dev/NCNNCam/app/src/main/jni
+-B/home/sonct/dev/NCNNCam/app/.cxx/cmake/release/arm64-v8a
+-DANDROID_ABI=arm64-v8a
+-DANDROID_PLATFORM=android-24
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/release/obj/arm64-v8a
+-DCMAKE_BUILD_TYPE=Release
+-DANDROID_NDK=/home/sonct/Android/Sdk/ndk/21.0.6113669
+-DCMAKE_TOOLCHAIN_FILE=/home/sonct/Android/Sdk/ndk/21.0.6113669/build/cmake/android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=/home/sonct/Android/Sdk/cmake/3.6.4111459/bin/ninja
+-GAndroid Gradle - Ninja
+jvmArgs : 
+

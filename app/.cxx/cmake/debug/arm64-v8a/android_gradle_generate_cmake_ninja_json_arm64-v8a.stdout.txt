@@ -1,0 +1,4 @@
+-- OpenCV libraries: opencv_calib3d;opencv_core;opencv_dnn;opencv_features2d;opencv_flann;opencv_highgui;opencv_imgcodecs;opencv_imgproc;opencv_ml;opencv_objdetect;opencv_photo;opencv_stitching;opencv_video;opencv_videoio
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/arm64-v8a

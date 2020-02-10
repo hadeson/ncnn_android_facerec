@@ -1,0 +1,14 @@
+# ninja log v5
+0	13	0	CMakeFiles/imgutil.dir/rgb2yuv.cc.o	9563dfab64521979
+0	15	0	CMakeFiles/imgutil.dir/yuv2rgb.cc.o	cce329c0722fc1a2
+0	60	0	CMakeFiles/imgutil.dir/imageutils_jni.cc.o	26bdc79a81887472
+60	283	0	/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/arm64-v8a/libimgutil.so	1775972447131a26
+0	6295	0	CMakeFiles/ncnn_jni.dir/ncnn/MobileFaceNet.cpp.o	45dc976893dcb010
+0	6779	0	CMakeFiles/ncnn_jni.dir/ncnn/ncnn_jni.cpp.o	a87abab74cff747e
+6779	9294	0	/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/arm64-v8a/libncnn_jni.so	369c4d56ff228d52
+1	6739	0	CMakeFiles/ncnn_jni.dir/ncnn/ncnn_jni.cpp.o	a87abab74cff747e
+6739	9124	0	/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/arm64-v8a/libncnn_jni.so	369c4d56ff228d52
+1	6596	0	CMakeFiles/ncnn_jni.dir/ncnn/ncnn_jni.cpp.o	a87abab74cff747e
+6596	8820	0	/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/arm64-v8a/libncnn_jni.so	369c4d56ff228d52
+0	6854	0	CMakeFiles/ncnn_jni.dir/ncnn/ncnn_jni.cpp.o	a87abab74cff747e
+6854	9160	0	/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/arm64-v8a/libncnn_jni.so	369c4d56ff228d52
