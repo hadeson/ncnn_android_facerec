@@ -139,26 +139,23 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
 
 void Detector::face_align(cv::Mat& face, bbox face_box) {
     // construct source matrix
-    cv::Mat src(5, 2, CV_64FC1);
-    src.at<double>(0, 0) = 38.2946;
-    src.at<double>(0, 1) = 51.6963;
-    src.at<double>(1, 0) = 73.5318;
-    src.at<double>(1, 1) = 51.5014;
-    src.at<double>(2, 0) = 56.0252;
-    src.at<double>(2, 1) = 71.7366;
-    src.at<double>(3, 0) = 41.5493;
-    src.at<double>(3, 1) = 92.3655;
-    src.at<double>(4, 0) = 70.7299;
-    src.at<double>(4, 1) = 92.2041;
 
-    cv::Mat dst(5, 2, CV_64FC1);
-    for (int i = 0; i < 5; i++) {
-        dst.at<double>(i, 0) = face_box.point[i]._x;
-        dst.at<double>(i, 1) = face_box.point[i]._y;
+    cv::Point2f dst[3];
+    dst[0] = cv::Point2f(38.2946, 51.6963);
+    dst[1] = cv::Point2f(73.5318, 51.5014);
+    dst[2] = cv::Point2f(56.0252, 71.7366);
+//    dst[3] = cv::Point2f(41.5493, 92.3655);
+//    dst[4] = cv::Point2f(70.7299, 92.2041);
+
+    cv::Point2f src[3];
+    for (int i = 0; i < 3; i++) {
+        src[i] = cv::Point2f(face_box.point[i]._x, face_box.point[i]._y);
     }
     cv::Mat affine_mat = cv::getAffineTransform(src, dst);
-    cv::Mat warped_face = cv::Mat::zeros(face.rows, face.cols, face.type());
-    cv::warpAffine(face, warped_face, affine_mat, face.size(), cv::INTER_LINEAR);
+//    cv::Mat warped_face = cv::Mat::zeros(face.rows, face.cols, face.type());
+//    cv::warpAffine(face, warped_face, affine_mat, face.size(), cv::INTER_LINEAR);
+    cv::Mat warped_face = cv::Mat::zeros(112, 112, face.type());
+    cv::warpAffine(face, warped_face, affine_mat, cv::Size(112, 112));
     face = warped_face.clone();
 }
 
