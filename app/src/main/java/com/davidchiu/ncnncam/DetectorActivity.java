@@ -109,8 +109,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
 //  public static final int NCNN_YOLO_WIDTH = 416;
 //  public static final int NCNN_YOLO_HEIGHT = 416;
-  public static final int NCNN_YOLO_WIDTH = 320;
-  public static final int NCNN_YOLO_HEIGHT = 240;
+//  public static final int NCNN_YOLO_WIDTH = 320;
+//  public static final int NCNN_YOLO_HEIGHT = 240;
+    public static final int NCNN_YOLO_WIDTH = 640;
+    public static final int NCNN_YOLO_HEIGHT = 480;
   public int frameWidth ;
   public int frameHeight;
   private Matrix frameToCanvasMatrix;

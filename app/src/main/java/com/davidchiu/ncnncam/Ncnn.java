@@ -43,49 +43,6 @@ public class Ncnn
 
     public boolean initNcnn(Context context, String paramFile, String weightsFile, String labels) throws IOException
     {
-        byte[] param = null;
-        byte[] bin = null;
-        byte[] words = null;
-
-//        if (paramFile == null || weightsFile == null) {
-//            return false;
-//        }
-//        Log.i(Ncnn.class.getSimpleName(), "Loading: " + paramFile + " weight file: " + weightsFile);
-//        {
-//            InputStream assetsInputStream;
-//                assetsInputStream = context.getAssets().open(paramFile);
-//            int available = assetsInputStream.available();
-//            param = new byte[available];
-//            int byteCode = assetsInputStream.read(param);
-//            assetsInputStream.close();
-//        }
-//        {
-//            InputStream assetsInputStream = context.getAssets().open(weightsFile);
-//            int available = assetsInputStream.available();
-//            bin = new byte[available];
-//            int byteCode = assetsInputStream.read(bin);
-//            assetsInputStream.close();
-//        }
-//        if (labels != null)
-//        {
-//            InputStream assetsInputStream = context.getAssets().open(labels);
-//            int available = assetsInputStream.available();
-//            words = new byte[available];
-//            int byteCode = assetsInputStream.read(words);
-//
-//            assetsInputStream.reset();
-//            BufferedReader br = null;
-//            br = new BufferedReader(new InputStreamReader(assetsInputStream));
-//            String line;
-//            while ((line = br.readLine()) != null) {
-//                mLabel.add(line);
-//            }
-//            br.close();
-//
-//            assetsInputStream.close();
-//        }
-
-//        return init(param, bin, words, context.getAssets());
         return init(context.getAssets());
     }
 
@@ -120,13 +77,13 @@ public class Ncnn
             Detection recognition = new Detection();
             recognition.id = (int)ncnnArray[i*nParams + 1];
 //            recognition.title = mLabel.get(recognition.id);
-//            if (id == "1") {
-//                recognition.title = "Son";
-//            }
-//            else {
-//                recognition.title = "pleb";
-//            }
-            recognition.title = id;
+            if (id.equals("1")) {
+                recognition.title = "Son";
+            }
+            else {
+                recognition.title = "new";
+            }
+//            recognition.title = id;
             recognition.detectionConfidence = ncnnArray[i*nParams+2];
             recognition.location = location;
             recognition.color = COLORS[0];

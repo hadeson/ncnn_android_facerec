@@ -6,6 +6,10 @@
 #include "detect.mem.h"
 #include "embed.id.h"
 #include "embed.mem.h"
+//#include "mobilefacenet_v2.id.h"
+//#include "mobilefacenet_v2.mem.h"
+//#include "arcface.id.h"
+//#include "arcface.mem.h"
 
 
 Detector::Detector():
@@ -55,6 +59,7 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
 //            bgr.data, ncnn::Mat::PIXEL_BGR,
 //            bgr.cols, bgr.rows, bgr.cols, bgr.rows
 //    );
+
     in.substract_mean_normalize(_mean_val, 0);
     ncnn::Extractor ex = Net->create_extractor();
 //    ex.set_light_mode(true);
@@ -132,6 +137,31 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
     }
 }
 
+void Detector::face_align(cv::Mat& face, bbox face_box) {
+    // construct source matrix
+    cv::Mat src(5, 2, CV_64FC1);
+    src.at<double>(0, 0) = 38.2946;
+    src.at<double>(0, 1) = 51.6963;
+    src.at<double>(1, 0) = 73.5318;
+    src.at<double>(1, 1) = 51.5014;
+    src.at<double>(2, 0) = 56.0252;
+    src.at<double>(2, 1) = 71.7366;
+    src.at<double>(3, 0) = 41.5493;
+    src.at<double>(3, 1) = 92.3655;
+    src.at<double>(4, 0) = 70.7299;
+    src.at<double>(4, 1) = 92.2041;
+
+    cv::Mat dst(5, 2, CV_64FC1);
+    for (int i = 0; i < 5; i++) {
+        dst.at<double>(i, 0) = face_box.point[i]._x;
+        dst.at<double>(i, 1) = face_box.point[i]._y;
+    }
+    cv::Mat affine_mat = cv::getAffineTransform(src, dst);
+    cv::Mat warped_face = cv::Mat::zeros(face.rows, face.cols, face.type());
+    cv::warpAffine(face, warped_face, affine_mat, face.size(), cv::INTER_LINEAR);
+    face = warped_face.clone();
+}
+
 inline bool Detector::cmp(bbox a, bbox b) {
     if (a.s > b.s)
         return true;
@@ -171,46 +201,6 @@ void Detector::create_anchor(std::vector<box> &anchor, int w, int h)
     std::vector<int> minsize4 = {128, 192, 256};
     min_sizes[3] = minsize4;
 
-
-    for (int k = 0; k < feature_map.size(); ++k)
-    {
-        std::vector<int> min_size = min_sizes[k];
-        for (int i = 0; i < feature_map[k][0]; ++i)
-        {
-            for (int j = 0; j < feature_map[k][1]; ++j)
-            {
-                for (int l = 0; l < min_size.size(); ++l)
-                {
-                    float s_kx = min_size[l]*1.0/w;
-                    float s_ky = min_size[l]*1.0/h;
-                    float cx = (j + 0.5) * steps[k]/w;
-                    float cy = (i + 0.5) * steps[k]/h;
-                    box axil = {cx, cy, s_kx, s_ky};
-                    anchor.push_back(axil);
-                }
-            }
-        }
-
-    }
-
-}
-
-void Detector::create_anchor_retinaface(std::vector<box> &anchor, int w, int h)
-{
-//    anchor.reserve(num_boxes);
-    anchor.clear();
-    std::vector<std::vector<int> > feature_map(3), min_sizes(3);
-    float steps[] = {8, 16, 32};
-    for (int i = 0; i < feature_map.size(); ++i) {
-        feature_map[i].push_back(ceil(h/steps[i]));
-        feature_map[i].push_back(ceil(w/steps[i]));
-    }
-    std::vector<int> minsize1 = {10, 20};
-    min_sizes[0] = minsize1;
-    std::vector<int> minsize2 = {32, 64};
-    min_sizes[1] = minsize2;
-    std::vector<int> minsize3 = {128, 256};
-    min_sizes[2] = minsize3;
 
     for (int k = 0; k < feature_map.size(); ++k)
     {
@@ -299,7 +289,9 @@ void Embedder::Init(const std::string &model_bin, JNIEnv* env, jobject assetMana
     opt.blob_allocator = &g_blob_pool_allocator;
     opt.workspace_allocator = &g_workspace_pool_allocator;
     Net->opt = opt;
+//    int ret = Net->load_param(arcface_param_bin);
     int ret = Net->load_param(embed_param_bin);
+//    int ret = Net->load_param(mobilefacenet_v2_param_bin);
     AAssetManager* mgr = AAssetManager_fromJava(env, assetManager);
     ret = Net->load_model(mgr, model_bin.c_str());
 }
@@ -309,22 +301,24 @@ Embedder::~Embedder() {
 }
 
 
-std::vector<float> Embedder::Embed(ncnn::Mat& in)
+std::vector<float> Embedder::Embed(ncnn::Mat& in, bool normalize)
 {
-//    ncnn::Mat in = ncnn::Mat::from_pixels_resize(
-//            bgr.data, ncnn::Mat::PIXEL_BGR,
-//            bgr.cols, bgr.rows, bgr.cols, bgr.rows
-//    );
-//    in.substract_mean_normalize(_mean_val, 0);
-    char out_w[80];
+    if (normalize) {
+        in.substract_mean_normalize(_mean_val, 0);
+    }
+//    char out_w[80];
     ncnn::Extractor ex = Net->create_extractor();
 //    ex.set_light_mode(true);
 //    ex.set_num_threads(4);
+//    ex.input(arcface_param_id::BLOB_data, in);
     ex.input(embed_param_id::BLOB_data, in);
+//    ex.input(mobilefacenet_v2_param_id::BLOB_data, in);
 
     // get output
     ncnn::Mat out;
+//    ex.extract(arcface_param_id::BLOB_fc1, out);
     ex.extract(embed_param_id::BLOB_fc1, out);
+//    ex.extract(mobilefacenet_v2_param_id::BLOB_fc1, out);
 
     // char out_w[80];
     // sprintf(out_w, "%d", out.w);

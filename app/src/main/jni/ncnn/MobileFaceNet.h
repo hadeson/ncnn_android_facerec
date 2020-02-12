@@ -7,7 +7,7 @@
 
 #include <algorithm>
 #include <android/asset_manager_jni.h>
-//#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include <string>
 #include <stack>
 #include "include/net.h"
@@ -54,9 +54,9 @@ public:
 //    void Detect(cv::Mat& bgr, std::vector<bbox>& boxes);
     void Detect(ncnn::Mat& in, std::vector<bbox>& boxes);
 
-    void create_anchor(std::vector<box> &anchor, int w, int h);
+    void face_align(cv::Mat& face, bbox face_box);
 
-    void create_anchor_retinaface(std::vector<box> &anchor, int w, int h);
+    void create_anchor(std::vector<box> &anchor, int w, int h);
 
     inline void SetDefaultParams();
 
@@ -85,7 +85,7 @@ public:
 
     inline void Release();
 
-    std::vector<float> Embed(ncnn::Mat& in);
+    std::vector<float> Embed(ncnn::Mat& in, bool normalize);
 
     inline void SetDefaultParams();
 
