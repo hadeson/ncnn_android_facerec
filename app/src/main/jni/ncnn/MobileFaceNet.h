@@ -49,7 +49,7 @@ public:
 
     inline void Release();
 
-    void nms(std::vector<bbox> &input_boxes, float NMS_THRESH);
+    void nms(std::vector<bbox> &input_boxes, int img_w, int img_h, float NMS_THRESH);
 
 //    void Detect(cv::Mat& bgr, std::vector<bbox>& boxes);
     void Detect(ncnn::Mat& in, std::vector<bbox>& boxes);

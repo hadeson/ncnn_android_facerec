@@ -14,7 +14,7 @@
 
 Detector::Detector():
         _nms(0.4),
-        _threshold(0.6),
+        _threshold(0.75),
         _mean_val{104.f, 117.f, 123.f},
         _retinaface(false),
         Net(new ncnn::Net())
@@ -30,8 +30,8 @@ inline void Detector::Release(){
 }
 
 Detector::Detector(const std::string &model_bin, JNIEnv* env, jobject assetManager):
-        _nms(0.7),
-        _threshold(0.6),
+        _nms(0.4),
+        _threshold(0.75),
         _mean_val{104.f, 117.f, 123.f},
         Net(new ncnn::Net())
 {
@@ -107,11 +107,11 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
             if (result.y1<0)
                 result.y1 = 0;
             result.x2 = (tmp1.cx + tmp1.sx/2);
-            if (result.x2>in.w)
-                result.x2 = in.w;
+            if (result.x2>1)
+                result.x2 = 1;
             result.y2 = (tmp1.cy + tmp1.sy/2);
-            if (result.y2>in.h)
-                result.y2 = in.h;
+            if (result.y2>1)
+                result.y2 = 1;
             result.s = *(ptr1 + 1);
 
             // landmark
@@ -129,7 +129,7 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
     }
 
     std::sort(total_box.begin(), total_box.end(), cmp);
-    nms(total_box, _nms);
+    nms(total_box, in.w, in.h, _nms);
 
     for (int j = 0; j < total_box.size(); ++j)
     {
@@ -140,15 +140,21 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
 void Detector::face_align(cv::Mat& face, bbox face_box) {
     // construct source matrix
 
-    cv::Point2f dst[3];
+    int point_num = 3;
+    cv::Point2f dst[point_num];
     dst[0] = cv::Point2f(38.2946, 51.6963);
     dst[1] = cv::Point2f(73.5318, 51.5014);
     dst[2] = cv::Point2f(56.0252, 71.7366);
 //    dst[3] = cv::Point2f(41.5493, 92.3655);
 //    dst[4] = cv::Point2f(70.7299, 92.2041);
 
-    cv::Point2f src[3];
-    for (int i = 0; i < 3; i++) {
+//    dst[0] = cv::Point2f(30.2946, 51.6963);
+//    dst[1] = cv::Point2f(65.5318, 51.5014);
+//    dst[2] = cv::Point2f(48.0252, 71.7366);
+//    dst[3] = cv::Point2f(33.5493, 92.3655);
+//    dst[4] = cv::Point2f(62.7299, 92.2041);
+    cv::Point2f src[point_num];
+    for (int i = 0; i < point_num; i++) {
         src[i] = cv::Point2f(face_box.point[i]._x, face_box.point[i]._y);
     }
     cv::Mat affine_mat = cv::getAffineTransform(src, dst);
@@ -222,22 +228,22 @@ void Detector::create_anchor(std::vector<box> &anchor, int w, int h)
 
 }
 
-void Detector::nms(std::vector<bbox> &input_boxes, float NMS_THRESH)
+void Detector::nms(std::vector<bbox> &input_boxes, int img_w, int img_h, float NMS_THRESH)
 {
     std::vector<float>vArea(input_boxes.size());
     for (int i = 0; i < int(input_boxes.size()); ++i)
     {
-        vArea[i] = (input_boxes.at(i).x2 - input_boxes.at(i).x1 + 1)
-                   * (input_boxes.at(i).y2 - input_boxes.at(i).y1 + 1);
+        vArea[i] = (input_boxes.at(i).x2*img_w - input_boxes.at(i).x1*img_w + 1)
+                   * (input_boxes.at(i).y2*img_h - input_boxes.at(i).y1*img_h + 1);
     }
     for (int i = 0; i < int(input_boxes.size()); ++i)
     {
         for (int j = i + 1; j < int(input_boxes.size());)
         {
-            float xx1 = std::max(input_boxes[i].x1, input_boxes[j].x1);
-            float yy1 = std::max(input_boxes[i].y1, input_boxes[j].y1);
-            float xx2 = std::min(input_boxes[i].x2, input_boxes[j].x2);
-            float yy2 = std::min(input_boxes[i].y2, input_boxes[j].y2);
+            float xx1 = std::max(input_boxes[i].x1*img_w, input_boxes[j].x1*img_w);
+            float yy1 = std::max(input_boxes[i].y1*img_h, input_boxes[j].y1*img_h);
+            float xx2 = std::min(input_boxes[i].x2*img_w, input_boxes[j].x2*img_w);
+            float yy2 = std::min(input_boxes[i].y2*img_h, input_boxes[j].y2*img_h);
             float w = std::max(float(0), xx2 - xx1 + 1);
             float   h = std::max(float(0), yy2 - yy1 + 1);
             float   inter = w * h;

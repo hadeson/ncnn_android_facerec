@@ -95,27 +95,44 @@ JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(init)(JNIEnv* env, jobject thiz, jobj
 {
     detector.Init("detect.bin", env, assetManager);
     embeder.Init("embed.bin", env, assetManager);
-//    embeder.Init("mobilefacenet_v2.bin", env, assetManager);
-//    embeder.Init("arcface.bin", env, assetManager);
 
     // Load image
-    int width = 320;
-    int height = 240;
+//    int width = 320;
+//    int height = 240;
+    int width = 640;
+    int height = 480;
+//    int width_rv = 480;
+//    int height_rv = 640;
     if (my_vecs.size() > 0) {
         return JNI_TRUE;
     }
     for (int ii = 0; ii < face_imgs.size(); ii++) {
-        cv::Mat cv_img_mat = cv::imread(face_imgs[ii].c_str(), cv::IMREAD_COLOR);
-        cv::Mat cv_img_mat_raw = cv_img_mat.clone();
-        int ori_width = cv_img_mat.cols;
-        int ori_height = cv_img_mat.rows;
+        cv::Mat cv_img_mat_raw = cv::imread(face_imgs[ii].c_str(), cv::IMREAD_COLOR);
+        cv::Mat cv_img_mat;
+//        cv::Mat cv_img_mat_raw = cv_img_mat.clone();
+        // resize image to retain info
+        // center crop in case of h > w
+        int ori_width = cv_img_mat_raw.cols;
+        int ori_height = cv_img_mat_raw.rows;
+        if (ori_height > ori_width) {
+            int x1 = 0;
+            int y1 = 0.2 * cv_img_mat_raw.rows;
+            int new_width = cv_img_mat_raw.cols;
+            int new_height = cv_img_mat_raw.rows * 0.65;
+            cv_img_mat = cv_img_mat_raw(cv::Rect(x1, y1, new_width, new_height)).clone();
+        }
+        else {
+            cv_img_mat = cv_img_mat_raw.clone();
+        }
+        ori_width = cv_img_mat.cols;
+        ori_height = cv_img_mat.rows;
         cv::Mat cv_img_mat_rs;
         cv::Size new_size(width, height);
         cv::resize(cv_img_mat, cv_img_mat_rs, new_size);
-        __android_log_print(ANDROID_LOG_DEBUG, "init cv", "width: %d, height: %d", cv_img_mat.cols, cv_img_mat.rows);
-        __android_log_print(ANDROID_LOG_DEBUG, "init cv resize", "width: %d, height: %d", cv_img_mat_rs.cols, cv_img_mat_rs.rows);
+//        __android_log_print(ANDROID_LOG_DEBUG, "init cv", "width: %d, height: %d", cv_img_mat.cols, cv_img_mat.rows);
+//        __android_log_print(ANDROID_LOG_DEBUG, "init cv resize", "width: %d, height: %d", cv_img_mat_rs.cols, cv_img_mat_rs.rows);
         ncnn::Mat ncnn_img_mat = ncnn::Mat::from_pixels_resize(cv_img_mat_rs.data, ncnn::Mat::PIXEL_BGR, width, height, width, height);
-        __android_log_print(ANDROID_LOG_DEBUG, "init ncnn size", "width: %d, height: %d", ncnn_img_mat.w, ncnn_img_mat.h);
+//        __android_log_print(ANDROID_LOG_DEBUG, "init ncnn size", "width: %d, height: %d", ncnn_img_mat.w, ncnn_img_mat.h);
 
         std::vector<bbox> boxes;
         detector.Detect(ncnn_img_mat, boxes);
@@ -131,20 +148,15 @@ JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(init)(JNIEnv* env, jobject thiz, jobj
             int cv_y2 = boxes[i].y2 * ori_height;
             int face_width = cv_x2-cv_x1;
             int face_height = cv_y2-cv_y1;
-//            cv_y1 += face_height * 0.05;
-//            face_height -= face_height * 0.15;
             for (int j = 0; j < 5; j++) {
                 boxes[i].point[j]._x = (boxes[i].point[j]._x * ori_width - cv_x1) / face_width * 112;
                 boxes[i].point[j]._y = (boxes[i].point[j]._y * ori_height - cv_y1) / face_height * 112;
-//            boxes[i].point[j]._x = (boxes[i].point[j]._x * ori_width - cv_x1);
-//            boxes[i].point[j]._y = (boxes[i].point[j]._y * ori_height - cv_y1);
             }
-//        cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height));
-            cv_face = cv_img_mat_raw(cv::Rect(cv_x1, cv_y1, face_width, face_height));
+            cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height)).clone();
             cv::resize(cv_face, cv_face_rs, face_size);
             detector.face_align(cv_face_rs, boxes[i]);
 //            cv::cvtColor(cv_face_rs, cv_face_rs, cv::COLOR_BGR2RGB);
-            __android_log_print(ANDROID_LOG_DEBUG, "face size", "width: %d, height: %d", face_width, face_height);
+//            __android_log_print(ANDROID_LOG_DEBUG, "face size", "width: %d, height: %d", face_width, face_height);
 //        ncnn_face = ncnn::Mat::from_pixels_resize(cv_face.data, ncnn::Mat::PIXEL_BGR, face_width, face_height, 112, 112);
 //        ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_BGR, 112, 112, 112, 112);
             ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_RGB, 112, 112, 112, 112);
@@ -152,14 +164,6 @@ JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(init)(JNIEnv* env, jobject thiz, jobj
             my_vecs.push_back(embeder.Embed(ncnn_face, false));
         }
     }
-//    std::string face_img = "/storage/emulated/0/Dcim/Camera/IMG_20200130_152037.jpg";
-//    // Chipu
-//    std::string face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_115217.jpg";
-//    // Trong
-//    std::string face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_115217.jpg";
-//    // Trump
-//    std::string face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_123859.jpg";
-
     return JNI_TRUE;
 }
 
@@ -172,18 +176,25 @@ JNIEXPORT jarray JNICALL NCNNJNI_METHOD(nativeDetect)(JNIEnv* env, jobject thiz,
     AndroidBitmap_getInfo(env, bitmap, &info);
     int width = info.width;
     int height = info.height;
-    int w = 320;
-    int h = 240;
-//    int w = 640;
-//    int h = 480;
+//    int w = 320;
+//    int h = 240;
+    int w = 640;
+    int h = 480;
+    cv::Size img_size(w, h);
 
     void* pixels = 0;
     int ret = AndroidBitmap_lockPixels(env, bitmap, &pixels);
     cv::Mat tmp_mat(info.height, info.width, CV_8UC4, pixels);
     cv::Mat cv_img_mat;
-//    cv::cvtColor(tmp_mat, cv_img_mat, cv::COLOR_RGBA2BGR);
-    cv::cvtColor(tmp_mat, cv_img_mat, cv::COLOR_RGBA2RGB);
-    cv::Mat cv_img_mat_raw = cv_img_mat.clone();
+    cv::Mat cv_img_mat_raw;
+    cv::Mat cv_img_mat_rs;
+    cv::cvtColor(tmp_mat, cv_img_mat_raw, cv::COLOR_RGBA2BGR);
+    cv_img_mat = cv_img_mat_raw(cv::Rect(0, 0, 480, 360));
+//    cv::imwrite(align_face_img, cv_img_mat); // write non resize
+//    cv::cvtColor(tmp_mat, cv_img_mat, cv::COLOR_RGBA2RGB);
+    cv::resize(cv_img_mat, cv_img_mat_rs, img_size);
+//    cv::imwrite(resize_face_img, cv_img_mat_rs); //write resize
+//    cv::Mat cv_img_mat_raw = cv_img_mat.clone();
     int ori_width = cv_img_mat.cols;
     int ori_height = cv_img_mat.rows;
     AndroidBitmap_unlockPixels(env, bitmap);
@@ -193,7 +204,8 @@ JNIEXPORT jarray JNICALL NCNNJNI_METHOD(nativeDetect)(JNIEnv* env, jobject thiz,
         return NULL;
 
     std::vector<bbox> boxes;
-    ncnn::Mat in = ncnn::Mat::from_android_bitmap_resize(env, bitmap, ncnn::Mat::PIXEL_BGR, w, h);
+//    ncnn::Mat in = ncnn::Mat::from_android_bitmap_resize(env, bitmap, ncnn::Mat::PIXEL_BGR, w, h);
+    ncnn::Mat in = ncnn::Mat::from_pixels_resize(cv_img_mat_rs.data, ncnn::Mat::PIXEL_BGR, w, h, w, h);
     detector.Detect(in, boxes);
     int box_num = boxes.size() * 6 + 1;
     __android_log_print(ANDROID_LOG_DEBUG, "output size", "%d", box_num);
@@ -204,21 +216,16 @@ JNIEXPORT jarray JNICALL NCNNJNI_METHOD(nativeDetect)(JNIEnv* env, jobject thiz,
     cv::Mat cv_face;
     cv::Mat cv_face_rs;
     cv::Size face_size(112, 112);
-    int top_w, bottom_w, left_w, right_w;
     float cosine_threshold = 0.5;
     for (int i = 0; i < boxes.size(); ++i) {
-        // face embed
-//        top_w = boxes[i].y1 * in.h;
-//        bottom_w = in.h - boxes[i].y2 * in.h;
-//        left_w = boxes[i].x1 * in.w;
-//        right_w = in.w - boxes[i].x2 * in.w;
-//        ncnn::copy_cut_border(in, face_crop, top_w, bottom_w, left_w, right_w);
-//        ncnn::resize_bilinear(face_crop, face_crop_rs, 112, 112);
-
         int cv_x1 = boxes[i].x1 * ori_width;
         int cv_y1 = boxes[i].y1 * ori_height;
         int cv_x2 = boxes[i].x2 * ori_width;
         int cv_y2 = boxes[i].y2 * ori_height;
+//        int cv_x1 = boxes[i].x1 * w;
+//        int cv_y1 = boxes[i].y1 * h;
+//        int cv_x2 = boxes[i].x2 * w;
+//        int cv_y2 = boxes[i].y2 * h;
         int face_width = cv_x2-cv_x1;
         int face_height = cv_y2-cv_y1;
 //        cv_y1 += face_height * 0.05;
@@ -228,24 +235,38 @@ JNIEXPORT jarray JNICALL NCNNJNI_METHOD(nativeDetect)(JNIEnv* env, jobject thiz,
             boxes[i].point[j]._y = (boxes[i].point[j]._y * ori_height - cv_y1) / face_height * 112;
 //            boxes[i].point[j]._x = (boxes[i].point[j]._x * ori_width - cv_x1);
 //            boxes[i].point[j]._y = (boxes[i].point[j]._y * ori_height - cv_y1);
+//            boxes[i].point[j]._x = boxes[i].point[j]._x * ori_width;
+//            boxes[i].point[j]._y = boxes[i].point[j]._y * ori_height;
+//            boxes[i].point[j]._x = boxes[i].point[j]._x * w;
+//            boxes[i].point[j]._y = boxes[i].point[j]._y * h;
         }
 //        cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height));
-        cv_face = cv_img_mat_raw(cv::Rect(cv_x1, cv_y1, face_width, face_height));
-        cv::cvtColor(cv_face, cv_face, cv::COLOR_RGB2BGR);
+        cv_face = cv_img_mat_raw(cv::Rect(cv_x1, cv_y1, face_width, face_height)).clone();
+//        cv::cvtColor(cv_face, cv_face, cv::COLOR_RGB2BGR);
         cv::resize(cv_face, cv_face_rs, face_size);
-        __android_log_print(ANDROID_LOG_DEBUG, "landmarks", "p1: %.2f %.2f, p2: %.2f %.2f", boxes[i].point[0]._x*112, boxes[i].point[0]._y*112, boxes[i].point[1]._x*112, boxes[i].point[1]._y*112);
+        __android_log_print(ANDROID_LOG_DEBUG, "landmarks", "p1: %.4f %.4f, p2: %.4f %.4f, p3: %.4f %.4f, p4: %.4f %.4f, p5: %.4f %.4f", boxes[i].point[0]._x*112, boxes[i].point[0]._y*112, boxes[i].point[1]._x*112, boxes[i].point[1]._y*112, boxes[i].point[2]._x*112, boxes[i].point[2]._y*112, boxes[i].point[3]._x*112, boxes[i].point[3]._y*112, boxes[i].point[4]._x*112, boxes[i].point[4]._y*112);
         cv::circle(cv_face_rs, cv::Point(boxes[i].point[0]._x, boxes[i].point[0]._y), 1, cv::Scalar(0, 0, 225), 4);
         cv::circle(cv_face_rs, cv::Point(boxes[i].point[1]._x, boxes[i].point[1]._y), 1, cv::Scalar(0, 255, 225), 4);
         cv::circle(cv_face_rs, cv::Point(boxes[i].point[2]._x, boxes[i].point[2]._y), 1, cv::Scalar(255, 0, 225), 4);
         cv::circle(cv_face_rs, cv::Point(boxes[i].point[3]._x, boxes[i].point[3]._y), 1, cv::Scalar(0, 255, 0), 4);
         cv::circle(cv_face_rs, cv::Point(boxes[i].point[4]._x, boxes[i].point[4]._y), 1, cv::Scalar(255, 0, 0), 4);
         cv::imwrite(resize_face_img, cv_face_rs);
+
+//        cv::cvtColor(cv_img_mat, cv_img_mat, cv::COLOR_RGB2BGR);
+//        cv::circle(cv_img_mat, cv::Point(boxes[i].point[0]._x, boxes[i].point[0]._y), 1, cv::Scalar(0, 0, 225), 4);
+//        cv::circle(cv_img_mat, cv::Point(boxes[i].point[1]._x, boxes[i].point[1]._y), 1, cv::Scalar(0, 255, 225), 4);
+//        cv::circle(cv_img_mat, cv::Point(boxes[i].point[2]._x, boxes[i].point[2]._y), 1, cv::Scalar(255, 0, 225), 4);
+//        cv::circle(cv_img_mat, cv::Point(boxes[i].point[3]._x, boxes[i].point[3]._y), 1, cv::Scalar(0, 255, 0), 4);
+//        cv::circle(cv_img_mat, cv::Point(boxes[i].point[4]._x, boxes[i].point[4]._y), 1, cv::Scalar(255, 0, 0), 4);
+//        cv::imwrite(resize_face_img, cv_img_mat);
+
         detector.face_align(cv_face_rs, boxes[i]);
         cv::imwrite(align_face_img, cv_face_rs);
 //        cv::imwrite(align_face_img, cv_face_rs);
         __android_log_print(ANDROID_LOG_DEBUG, "face size", "width: %d, height: %d", face_width, face_height);
 //        face_crop_rs = ncnn::Mat::from_pixels_resize(cv_face.data, ncnn::Mat::PIXEL_BGR, face_width, face_height, 112, 112);
 //        face_crop_rs = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_BGR, 112, 112, 112, 112);
+        cv::cvtColor(cv_face_rs, cv_face_rs, cv::COLOR_BGR2RGB);
         face_crop_rs = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_RGB, 112, 112, 112, 112);
 
         std::vector<float> vec = embeder.Embed(face_crop_rs, false);
@@ -261,9 +282,9 @@ JNIEXPORT jarray JNICALL NCNNJNI_METHOD(nativeDetect)(JNIEnv* env, jobject thiz,
 
         output[i*6+2] = boxes[i].s;
         output[i*6+3] = boxes[i].x1;
-        output[i*6+4] = boxes[i].y1;
+        output[i*6+4] = boxes[i].y1 / height * 360;
         output[i*6+5] = boxes[i].x2;
-        output[i*6+6] = boxes[i].y2;
+        output[i*6+6] = boxes[i].y2 / height * 360;
     }
 
     jfloatArray jOutputData = env->NewFloatArray(boxes.size()*6+1);

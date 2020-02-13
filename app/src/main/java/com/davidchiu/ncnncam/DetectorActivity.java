@@ -97,11 +97,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private byte[] luminanceCopy;
 
-  public static final String NCNN_PARAM_FILE = "mobilenet_yolo.param.bin";
-  public static final String NCNN_WEIGHTS_FILE = "mobilenet_yolo.bin";
+//  public static final String NCNN_PARAM_FILE = "mobilenet_yolo.param.bin";
+//  public static final String NCNN_WEIGHTS_FILE = "mobilenet_yolo.bin";
 //  public static final String NCNN_PARAM_FILE = "yolov2-tiny.param.bin";
 //  public static final String NCNN_WEIGHTS_FILE = "yolov2-tiny.bin";
-  public static final String NCNN_LABEL_FILE = "labelcoco20.txt";
+//  public static final String NCNN_LABEL_FILE = "labelcoco20.txt";
 
   private String ncnnParamFile;
   private String ncnnWeightsFile;
