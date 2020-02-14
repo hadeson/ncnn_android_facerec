@@ -49,14 +49,6 @@ static void bench_start()
     gettimeofday(&tv_begin, NULL);
 }
 
-static void bench_end(const char* comment)
-{
-    gettimeofday(&tv_end, NULL);
-    elasped = ((tv_end.tv_sec - tv_begin.tv_sec) * 1000000.0f + tv_end.tv_usec - tv_begin.tv_usec) / 1000.0f;
-//     fprintf(stderr, "%.2fms   %s\n", elasped, comment);
-    __android_log_print(ANDROID_LOG_DEBUG, "Ncnn", "%.2fms   %s", elasped, comment);
-}
-
 static ncnn::UnlockedPoolAllocator g_blob_pool_allocator;
 static ncnn::PoolAllocator g_workspace_pool_allocator;
 
@@ -70,18 +62,21 @@ static ncnn::PoolAllocator g_workspace_pool_allocator;
 static Detector detector;
 static Embedder embeder;
 //static std::vector<float> my_vec;
-static std::vector<std::vector<float>> my_vecs;
+//static std::vector<std::vector<float>> my_vecs;
+static std::vector<std::vector<std::vector<float>>> my_vecs;
+static int vec_size = 128;
 static std::vector<std::string> face_imgs = {
     "/storage/emulated/0/Dcim/Camera/IMG_20200130_152037.jpg",
-    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171702.jpg",
-    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171659.jpg",
-    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171656.jpg",
-    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171654.jpg",
-    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171652.jpg",
-    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171648.jpg",
+//    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171702.jpg",
+//    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171659.jpg",
+//    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171656.jpg",
+//    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171654.jpg",
+//    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171652.jpg",
+//    "/storage/emulated/0/Dcim/Camera/IMG_20200212_171648.jpg",
 };
 std::string align_face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_123859.jpg";
-std::string resize_face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_123851.jpg";
+//std::string resize_face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_123851.jpg";
+std::string resize_face_img = "/storage/emulated/0/Download/test.png";
 
 
 #define NCNNJNI_METHOD(METHOD_NAME) \
@@ -89,81 +84,199 @@ std::string resize_face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_123
 
 extern "C" {
 
-// public native boolean Init(byte[] param, byte[] bin, byte[] words);
-//JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(init)(JNIEnv* env, jobject thiz, jbyteArray param, jbyteArray bin, jbyteArray words, jobject assetManager)
-JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(init)(JNIEnv* env, jobject thiz, jobject assetManager)
-{
-    detector.Init("detect.bin", env, assetManager);
-    embeder.Init("embed.bin", env, assetManager);
+JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(load_embedding)(JNIEnv* env, jobject thiz, jintArray ids, jfloatArray features) {
+    return JNI_TRUE;
+}
 
-    // Load image
-//    int width = 320;
-//    int height = 240;
+JNIEXPORT jarray JNICALL  NCNNJNI_METHOD(embed)(JNIEnv* env, jobject thiz, jobject assetManager, jstring img_path) {
+    if (!detector._loaded) {
+        detector.Init("detect.bin", env, assetManager);
+        embeder.Init("embed.bin", env, assetManager);
+    }
+    const char *native_img_path = env->GetStringUTFChars(img_path, 0);
+//    __android_log_print(ANDROID_LOG_DEBUG, "Native img path", "%s", native_img_path);
+
     int width = 640;
     int height = 480;
-//    int width_rv = 480;
-//    int height_rv = 640;
+    cv::Mat cv_img_mat_raw = cv::imread(native_img_path, cv::IMREAD_COLOR);
+    env->ReleaseStringUTFChars(img_path, native_img_path);
+    cv::Mat cv_img_mat;
+    // resize image to retain info
+    // center crop in case of h > w
+    int ori_width = cv_img_mat_raw.cols;
+    int ori_height = cv_img_mat_raw.rows;
+    if (ori_height > ori_width) {
+        int x1 = 0;
+        int y1 = 0.2 * cv_img_mat_raw.rows;
+        int new_width = cv_img_mat_raw.cols;
+        int new_height = cv_img_mat_raw.rows * 0.65;
+        cv_img_mat = cv_img_mat_raw(cv::Rect(x1, y1, new_width, new_height)).clone();
+    } else {
+        cv_img_mat = cv_img_mat_raw.clone();
+    }
+    ori_width = cv_img_mat.cols;
+    ori_height = cv_img_mat.rows;
+    cv::Mat cv_img_mat_rs;
+    cv::Size new_size(width, height);
+    cv::resize(cv_img_mat, cv_img_mat_rs, new_size);
+//        __android_log_print(ANDROID_LOG_DEBUG, "init cv", "width: %d, height: %d", cv_img_mat.cols, cv_img_mat.rows);
+//        __android_log_print(ANDROID_LOG_DEBUG, "init cv resize", "width: %d, height: %d", cv_img_mat_rs.cols, cv_img_mat_rs.rows);
+    ncnn::Mat ncnn_img_mat = ncnn::Mat::from_pixels_resize(cv_img_mat_rs.data, ncnn::Mat::PIXEL_BGR,
+                                                           width, height, width, height);
+        __android_log_print(ANDROID_LOG_DEBUG, "EMBED ncnn size", "width: %d, height: %d", ncnn_img_mat.w, ncnn_img_mat.h);
+
+    std::vector<bbox> boxes;
+    detector.Detect(ncnn_img_mat, boxes);
+
+    ncnn::Mat ncnn_face;
+    cv::Mat cv_face;
+    cv::Mat cv_face_rs;
+    cv::Size face_size(112, 112);
+    std::vector<std::vector<float>> new_vecs;
+    int max_box_area = 0;
+    int max_box_id = -1;
+    for (int i = 0; i < boxes.size(); ++i) {
+        int cv_x1 = boxes[i].x1 * ori_width;
+        int cv_y1 = boxes[i].y1 * ori_height;
+        int cv_x2 = boxes[i].x2 * ori_width;
+        int cv_y2 = boxes[i].y2 * ori_height;
+        int face_width = cv_x2 - cv_x1;
+        int face_height = cv_y2 - cv_y1;
+        int box_area = face_width * face_height;
+        if (box_area > max_box_area) {
+            max_box_area = box_area;
+            max_box_id = i;
+        }
+    }
+
+    int cv_x1 = boxes[max_box_id].x1 * ori_width;
+    int cv_y1 = boxes[max_box_id].y1 * ori_height;
+    int cv_x2 = boxes[max_box_id].x2 * ori_width;
+    int cv_y2 = boxes[max_box_id].y2 * ori_height;
+    int face_width = cv_x2 - cv_x1;
+    int face_height = cv_y2 - cv_y1;
+    for (int j = 0; j < 5; j++) {
+        boxes[max_box_id].point[j]._x = (boxes[max_box_id].point[j]._x * ori_width - cv_x1) / face_width * 112;
+        boxes[max_box_id].point[j]._y = (boxes[max_box_id].point[j]._y * ori_height - cv_y1) / face_height * 112;
+    }
+    cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height)).clone();
+    cv::resize(cv_face, cv_face_rs, face_size);
+    detector.face_align(cv_face_rs, boxes[max_box_id]);
+    ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_RGB, 112, 112,
+                                              112, 112);
+//    __android_log_print(ANDROID_LOG_DEBUG, "face size ncnn", "width: %d, height: %d",
+//                        ncnn_face.w, ncnn_face.h);
+    new_vecs.push_back(embeder.Embed(ncnn_face, false));
+
+    // parse result to java
+    int jOutputSize = new_vecs.size()*vec_size;
+    jfloat output[jOutputSize];
+//    output[0] = new_vecs.size();
+    for (int i = 0; i < new_vecs.size(); i++) {
+        for (int j = 0; j < vec_size; j++) {
+            output[i*vec_size + j] = new_vecs[i][j];
+        }
+    }
+    jfloatArray jOutputData = env->NewFloatArray(jOutputSize);
+    env->SetFloatArrayRegion(jOutputData, 0, jOutputSize, output);  // copy
+    return jOutputData;
+}
+
+JNIEXPORT jboolean JNICALL  NCNNJNI_METHOD(init)(JNIEnv* env, jobject thiz, jobject assetManager, jintArray ids, jfloatArray features)
+{
+    if (!detector._loaded) {
+        detector.Init("detect.bin", env, assetManager);
+        embeder.Init("embed.bin", env, assetManager);
+    }
     if (my_vecs.size() > 0) {
         return JNI_TRUE;
     }
-    for (int ii = 0; ii < face_imgs.size(); ii++) {
-        cv::Mat cv_img_mat_raw = cv::imread(face_imgs[ii].c_str(), cv::IMREAD_COLOR);
-        cv::Mat cv_img_mat;
-//        cv::Mat cv_img_mat_raw = cv_img_mat.clone();
-        // resize image to retain info
-        // center crop in case of h > w
-        int ori_width = cv_img_mat_raw.cols;
-        int ori_height = cv_img_mat_raw.rows;
-        if (ori_height > ori_width) {
-            int x1 = 0;
-            int y1 = 0.2 * cv_img_mat_raw.rows;
-            int new_width = cv_img_mat_raw.cols;
-            int new_height = cv_img_mat_raw.rows * 0.65;
-            cv_img_mat = cv_img_mat_raw(cv::Rect(x1, y1, new_width, new_height)).clone();
-        }
-        else {
-            cv_img_mat = cv_img_mat_raw.clone();
-        }
-        ori_width = cv_img_mat.cols;
-        ori_height = cv_img_mat.rows;
-        cv::Mat cv_img_mat_rs;
-        cv::Size new_size(width, height);
-        cv::resize(cv_img_mat, cv_img_mat_rs, new_size);
-//        __android_log_print(ANDROID_LOG_DEBUG, "init cv", "width: %d, height: %d", cv_img_mat.cols, cv_img_mat.rows);
-//        __android_log_print(ANDROID_LOG_DEBUG, "init cv resize", "width: %d, height: %d", cv_img_mat_rs.cols, cv_img_mat_rs.rows);
-        ncnn::Mat ncnn_img_mat = ncnn::Mat::from_pixels_resize(cv_img_mat_rs.data, ncnn::Mat::PIXEL_BGR, width, height, width, height);
-//        __android_log_print(ANDROID_LOG_DEBUG, "init ncnn size", "width: %d, height: %d", ncnn_img_mat.w, ncnn_img_mat.h);
+    jsize size = env->GetArrayLength( ids );
+    std::vector<int> ids_vec( size );
+    env->GetIntArrayRegion( ids, 0, size, &ids_vec[0] );
 
-        std::vector<bbox> boxes;
-        detector.Detect(ncnn_img_mat, boxes);
+    size = env->GetArrayLength( features );
+    std::vector<float> features_vec( size );
+    env->GetFloatArrayRegion( features, 0, size, &features_vec[0] );
 
-        ncnn::Mat ncnn_face;
-        cv::Mat cv_face;
-        cv::Mat cv_face_rs;
-        cv::Size face_size(112, 112);
-        for (int i = 0; i < boxes.size(); ++i) {
-            int cv_x1 = boxes[i].x1 * ori_width;
-            int cv_y1 = boxes[i].y1 * ori_height;
-            int cv_x2 = boxes[i].x2 * ori_width;
-            int cv_y2 = boxes[i].y2 * ori_height;
-            int face_width = cv_x2-cv_x1;
-            int face_height = cv_y2-cv_y1;
-            for (int j = 0; j < 5; j++) {
-                boxes[i].point[j]._x = (boxes[i].point[j]._x * ori_width - cv_x1) / face_width * 112;
-                boxes[i].point[j]._y = (boxes[i].point[j]._y * ori_height - cv_y1) / face_height * 112;
+    int cur_id = -1;
+    std::vector<std::vector<float>> acc_features;
+    for (int i = 0; i < ids_vec.size(); i++) {
+        if (cur_id != ids_vec[i]) {
+            if (cur_id != -1) {
+                my_vecs.push_back(acc_features);
             }
-            cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height)).clone();
-            cv::resize(cv_face, cv_face_rs, face_size);
-            detector.face_align(cv_face_rs, boxes[i]);
-//            cv::cvtColor(cv_face_rs, cv_face_rs, cv::COLOR_BGR2RGB);
-//            __android_log_print(ANDROID_LOG_DEBUG, "face size", "width: %d, height: %d", face_width, face_height);
-//        ncnn_face = ncnn::Mat::from_pixels_resize(cv_face.data, ncnn::Mat::PIXEL_BGR, face_width, face_height, 112, 112);
-//        ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_BGR, 112, 112, 112, 112);
-            ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_RGB, 112, 112, 112, 112);
-            __android_log_print(ANDROID_LOG_DEBUG, "face size ncnn", "width: %d, height: %d", ncnn_face.w, ncnn_face.h);
-            my_vecs.push_back(embeder.Embed(ncnn_face, false));
+            acc_features.clear();
+            cur_id = ids_vec[i];
         }
+        std::vector<float> feat;
+        for (int j = i*vec_size; j < (i+1)*vec_size; j++) {
+            feat.push_back(features_vec[j]);
+        }
+        acc_features.push_back(feat);
     }
+    my_vecs.push_back(acc_features);
+    __android_log_print(ANDROID_LOG_DEBUG, "INIT", "id: %d features: %d, my_vec: %d random_point: %.2f", ids_vec.size(), features_vec.size(), my_vecs[0].size(), features[100]);
+
+//    // Load image
+//    int width = 640;
+//    int height = 480;
+//    if (my_vecs.size() > 0) {
+//        return JNI_TRUE;
+//    }
+//    for (int ii = 0; ii < face_imgs.size(); ii++) {
+//        cv::Mat cv_img_mat_raw = cv::imread(face_imgs[ii].c_str(), cv::IMREAD_COLOR);
+//        cv::Mat cv_img_mat;
+//        // resize image to retain info
+//        // center crop in case of h > w
+//        int ori_width = cv_img_mat_raw.cols;
+//        int ori_height = cv_img_mat_raw.rows;
+//        if (ori_height > ori_width) {
+//            int x1 = 0;
+//            int y1 = 0.2 * cv_img_mat_raw.rows;
+//            int new_width = cv_img_mat_raw.cols;
+//            int new_height = cv_img_mat_raw.rows * 0.65;
+//            cv_img_mat = cv_img_mat_raw(cv::Rect(x1, y1, new_width, new_height)).clone();
+//        }
+//        else {
+//            cv_img_mat = cv_img_mat_raw.clone();
+//        }
+//        ori_width = cv_img_mat.cols;
+//        ori_height = cv_img_mat.rows;
+//        cv::Mat cv_img_mat_rs;
+//        cv::Size new_size(width, height);
+//        cv::resize(cv_img_mat, cv_img_mat_rs, new_size);
+////        __android_log_print(ANDROID_LOG_DEBUG, "init cv", "width: %d, height: %d", cv_img_mat.cols, cv_img_mat.rows);
+////        __android_log_print(ANDROID_LOG_DEBUG, "init cv resize", "width: %d, height: %d", cv_img_mat_rs.cols, cv_img_mat_rs.rows);
+//        ncnn::Mat ncnn_img_mat = ncnn::Mat::from_pixels_resize(cv_img_mat_rs.data, ncnn::Mat::PIXEL_BGR, width, height, width, height);
+////        __android_log_print(ANDROID_LOG_DEBUG, "init ncnn size", "width: %d, height: %d", ncnn_img_mat.w, ncnn_img_mat.h);
+//
+//        std::vector<bbox> boxes;
+//        detector.Detect(ncnn_img_mat, boxes);
+//
+//        ncnn::Mat ncnn_face;
+//        cv::Mat cv_face;
+//        cv::Mat cv_face_rs;
+//        cv::Size face_size(112, 112);
+//        for (int i = 0; i < boxes.size(); ++i) {
+//            int cv_x1 = boxes[i].x1 * ori_width;
+//            int cv_y1 = boxes[i].y1 * ori_height;
+//            int cv_x2 = boxes[i].x2 * ori_width;
+//            int cv_y2 = boxes[i].y2 * ori_height;
+//            int face_width = cv_x2-cv_x1;
+//            int face_height = cv_y2-cv_y1;
+//            for (int j = 0; j < 5; j++) {
+//                boxes[i].point[j]._x = (boxes[i].point[j]._x * ori_width - cv_x1) / face_width * 112;
+//                boxes[i].point[j]._y = (boxes[i].point[j]._y * ori_height - cv_y1) / face_height * 112;
+//            }
+//            cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height)).clone();
+//            cv::resize(cv_face, cv_face_rs, face_size);
+//            detector.face_align(cv_face_rs, boxes[i]);
+//            ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_RGB, 112, 112, 112, 112);
+//            __android_log_print(ANDROID_LOG_DEBUG, "face size ncnn", "width: %d, height: %d", ncnn_face.w, ncnn_face.h);
+//            my_vecs.push_back(embeder.Embed(ncnn_face, false));
+//        }
+//    }
     return JNI_TRUE;
 }
 
@@ -271,15 +384,21 @@ JNIEXPORT jarray JNICALL NCNNJNI_METHOD(nativeDetect)(JNIEnv* env, jobject thiz,
 
         std::vector<float> vec = embeder.Embed(face_crop_rs, false);
         __android_log_print(ANDROID_LOG_DEBUG, "embed output", "%d", vec.size());
-        output[i*6+1] = 0;
+//        output[i*6+1] = 0;
+        float min_dist = 1000000;
+        int min_id = -1;
         for (int j = 0; j < my_vecs.size(); j++) {
-            float dist = embeder.cosine_distance(vec, my_vecs[j]);
-            __android_log_print(ANDROID_LOG_DEBUG, "cosine distance", "%.2f", dist);
-            if (dist < cosine_threshold) {
-                output[i*6+1] = 1;
+            for (int k = 0; k < my_vecs[j].size(); k++) {
+                float dist = embeder.cosine_distance(vec, my_vecs[j][k]);
+                __android_log_print(ANDROID_LOG_DEBUG, "cosine distance", "%.2f", dist);
+                if ((dist < cosine_threshold) && (dist < min_dist)) {
+                    min_dist = dist;
+                    min_id = j;
+                }
             }
         }
 
+        output[i*6+1] = min_id;
         output[i*6+2] = boxes[i].s;
         output[i*6+3] = boxes[i].x1;
         output[i*6+4] = boxes[i].y1 / height * 360;

@@ -16,7 +16,7 @@ Detector::Detector():
         _nms(0.4),
         _threshold(0.75),
         _mean_val{104.f, 117.f, 123.f},
-        _retinaface(false),
+        _loaded(false),
         Net(new ncnn::Net())
 {
 }
@@ -33,6 +33,7 @@ Detector::Detector(const std::string &model_bin, JNIEnv* env, jobject assetManag
         _nms(0.4),
         _threshold(0.75),
         _mean_val{104.f, 117.f, 123.f},
+        _loaded(false),
         Net(new ncnn::Net())
 {
     Init(model_bin, env, assetManager);
@@ -40,6 +41,7 @@ Detector::Detector(const std::string &model_bin, JNIEnv* env, jobject assetManag
 
 void Detector::Init(const std::string &model_bin, JNIEnv* env, jobject assetManager)
 {
+    _loaded = true;
     static ncnn::UnlockedPoolAllocator g_blob_pool_allocator;
     static ncnn::PoolAllocator g_workspace_pool_allocator;
     ncnn::Option opt;
@@ -177,6 +179,7 @@ inline void Detector::SetDefaultParams(){
     _mean_val[0] = 104;
     _mean_val[1] = 117;
     _mean_val[2] = 123;
+    _loaded = false;
     Net = nullptr;
 
 }

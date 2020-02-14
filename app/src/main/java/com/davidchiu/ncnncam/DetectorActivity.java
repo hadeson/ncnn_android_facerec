@@ -103,9 +103,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 //  public static final String NCNN_WEIGHTS_FILE = "yolov2-tiny.bin";
 //  public static final String NCNN_LABEL_FILE = "labelcoco20.txt";
 
-  private String ncnnParamFile;
-  private String ncnnWeightsFile;
-  private String ncnnLabelFile;
+//  private String ncnnParamFile;
+//  private String ncnnWeightsFile;
+//  private String ncnnLabelFile;
 
 //  public static final int NCNN_YOLO_WIDTH = 416;
 //  public static final int NCNN_YOLO_HEIGHT = 416;
@@ -125,22 +125,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     //private BorderedText borderedText;
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
-//      if (BuildConfig.param_file != null) {
-//          ncnnParamFile = BuildConfig.param_file;
-//      } else {
-//          ncnnParamFile = NCNN_PARAM_FILE;
-//
-//      }
-//      if (BuildConfig.weights_file != null) {
-//          ncnnWeightsFile = BuildConfig.weights_file;
-//      }else {
-//          ncnnWeightsFile = NCNN_WEIGHTS_FILE;
-//      }
-//      if (BuildConfig.label_file != null) {
-//          ncnnLabelFile = BuildConfig.label_file;
-//      } else {
-//          ncnnLabelFile = NCNN_LABEL_FILE;
-//      }
       final float textSizePx =
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
@@ -159,12 +143,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       cropWidth = NCNN_YOLO_WIDTH;     //was: 128
       cropHeight = NCNN_YOLO_HEIGHT;    //was: 96
 
-//      if (BuildConfig.cropW != 0) {
-//          cropWidth = BuildConfig.cropW;
-//      }
-//      if (BuildConfig.cropH != 0) {
-//          cropHeight = BuildConfig.cropH;
-//      }
 
       previewWidth = size.getWidth();
       previewHeight = size.getHeight();
@@ -173,18 +151,28 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
 
       try {
-      detector = new Ncnn();
-      detector.setImageSize(size.getWidth(), size.getHeight());
-        detector.initNcnn(this, ncnnParamFile, ncnnWeightsFile, ncnnLabelFile);
-      //cropSize = TF_OD_API_INPUT_SIZE;
-    } catch (final Exception e) {
-      //LOGGER.e("Exception initializing classifier!", e);
-      Toast toast =
-          Toast.makeText(
-              getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
-      toast.show();
-      finish();
-    }
+        detector = new Ncnn();
+        detector.setImageSize(size.getWidth(), size.getHeight());
+        String[] test_img_path = {
+            "/storage/emulated/0/Dcim/Camera/IMG_20200130_152037.jpg",
+            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171702.jpg",
+            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171659.jpg",
+            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171656.jpg",
+            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171654.jpg",
+            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171652.jpg",
+            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171648.jpg",
+        };
+//        detector.getEmbed(this, test_img_path);
+        detector.initNcnn(this);
+        //cropSize = TF_OD_API_INPUT_SIZE;
+      } catch (final Exception e) {
+        //LOGGER.e("Exception initializing classifier!", e);
+        Toast toast =
+            Toast.makeText(
+                getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
+        toast.show();
+        finish();
+      }
 
     sensorOrientation = rotation - getScreenOrientation();
 //    sensorOrientation = 0;

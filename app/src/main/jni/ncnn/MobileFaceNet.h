@@ -68,7 +68,7 @@ public:
     float _nms;
     float _threshold;
     float _mean_val[3];
-    bool _retinaface;
+    bool _loaded;
 
     ncnn::Net *Net;
 };
