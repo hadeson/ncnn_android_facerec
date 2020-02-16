@@ -68,7 +68,8 @@ target_link_libraries(ncnn_jni
                       z)
 
 # Load OpenCV
-set(OpenCV_DIR "/home/sonct/setup/OpenCV-android-sdk/sdk/native/jni/")
+#set(OpenCV_DIR "/home/sonct/setup/OpenCV-android-sdk/sdk/native/jni/")
+set(OpenCV_DIR "C:\\Users\\caoth\\github_repos\\OpenCV-android-sdk\\sdk\\native\\jni")
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
 target_link_libraries(ncnn_jni ${OpenCV_LIBS})

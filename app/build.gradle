@@ -1,23 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 28
     buildToolsVersion "29.0.2"
 
     defaultConfig {
         applicationId "com.davidchiu.ncnncam"
 //        targetSdkVersion 27
-        minSdkVersion 24
+        minSdkVersion 28
         ndk {
             moduleName "ncnn"
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
-//        externalNativeBuild {
-//            cmake {
-//                cppFlags "-std=c++11 -fopenmp"//c++,多线程 需要添加need to add
-//                abiFilters "armeabi-v7a" // 手机的硬件架构，基本所有的硬件都适配
-//            }
-//        }
 
     }
     externalNativeBuild {
@@ -32,73 +26,27 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-//    sourceSets {
-//        main {
-//            //manifest.srcFile 'src/main/AndroidManifest.xml'
-//            //java.srcDirs         = ['src/main/java']
-//            //resources.srcDirs    = ['src/main']
-//            //aidl.srcDirs         = ['src/main/aidl']
-//            //renderscript.srcDirs = ['src/main']
-//            //res.srcDirs          = ['src/main/res']
-//            //assets.srcDirs       = ['src/main/assets']
-//            //jniLibs.srcDirs  'build/'+project.ext.buildTempDir+ '/lib'
-//            jniLibs.srcDirs = ['src/main/libs']
-//            jni.srcDirs = [] // disable use of automatically generated Android.mk
-//        }
-//
-//    }
 
-//    flavorDimensions "model"
-//    productFlavors {
-////        yolo {
-////            dimension "model"
-////            applicationId "com.davidchiu.ncnnyolo"
-////            versionName '0.1.0'
-////            buildConfigField 'String', 'header_file', '"mobilenet_yolo.id.h"'
-////            buildConfigField 'String', 'param_file', '"mobilenet_yolo.param.bin"'
-////            buildConfigField 'String', 'weights_file', '"mobilenet_yolo.bin"'
-////            buildConfigField 'String', 'label_file', '"labelcoco20.txt"'
-////            buildConfigField 'int', 'cropW', '416'
-////            buildConfigField 'int', 'cropH', '416'
-////            versionNameSuffix "-yolo"
-////            resValue "string", "app_name", "NCNN Yolo"
-////            manifestPlaceholders = [screenOrientation: "vertical"]
-////            buildConfigField 'String', 'model', '"yolo"'
-////            externalNativeBuild {
-////                cmake {
-////                    arguments "-DYOLO=1"
-////                    arguments "-DHEADER_FILE=mobilenet_yolo.id.h"
-////                    arguments "-DNAMESPACE=mobilenet_yolo_param_id"
-////                    arguments "-DNCNN_INPUT=mobilenet_yolo_param_id::BLOB_data"
-////                    arguments "-DNCNN_OUTPUT=mobilenet_yolo_param_id::BLOB_detection_out"
-////                }
-////            }
-////
-////        }
-////        SSDMobilnet {
-////            dimension "model"
-////            applicationId "com.davidchiu.ncnnssd"
-////            versionName '0.1.0'
-////            buildConfigField 'String', 'config_file', '"MobileNetSSD_deploy.id.h"'
-////            buildConfigField 'String', 'param_file', '"MobileNetSSD_deploy.param.bin"'
-////            buildConfigField 'String', 'weights_file', '"MobileNetSSD_deploy.bin"'
-////            buildConfigField 'String', 'label_file', '"labelcoco20.txt"'
-////            buildConfigField 'int', 'cropW', '300'
-////            buildConfigField 'int', 'cropH', '300'
-////            versionNameSuffix "-ssd"
-////            resValue "string", "app_name", "NCNN SSD"
-////            manifestPlaceholders = [screenOrientation: "vertical"]
-////            buildConfigField 'String', 'model', '"ssd"'
-////            externalNativeBuild {
-////                cmake {
-////                    arguments "-DSSD=1"
-////                    arguments "-DHEADER_FILE=MobileNetSSD_deploy.id.h"
-////                    arguments "-DNAMESPACE=MobileNetSSD_deploy_param_id"
-////                    arguments "-DNCNN_INPUT=MobileNetSSD_deploy_param_id::BLOB_data"
-////                    arguments "-DNCNN_OUTPUT=MobileNetSSD_deploy_param_id::BLOB_detection_out"
-////                }
-////            }
-////        }
+//    dependencies {
+//        def room_version = "2.2.3"
 //
+//        implementation "androidx.room:room-runtime:$room_version"
+//        annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+//
+//        // optional - Kotlin Extensions and Coroutines support for Room
+//        implementation "androidx.room:room-ktx:$room_version"
+//
+//        // optional - RxJava support for Room
+//        implementation "androidx.room:room-rxjava2:$room_version"
+//
+//        // optional - Guava support for Room, including Optional and ListenableFuture
+//        implementation "androidx.room:room-guava:$room_version"
+//
+//        // Test helpers
+//        testImplementation "androidx.room:room-testing:$room_version"
 //    }
+}
+
+dependencies {
+    implementation 'com.android.support:support-v4:28.0.0'
 }

@@ -8,6 +8,7 @@ package com.davidchiu.ncnncam;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.os.Environment;
 import android.util.Log;
 import android.content.res.AssetManager;
 
@@ -23,6 +24,7 @@ import java.io.File;
 import java.nio.channels.FileChannel;
 import java.nio.ByteBuffer;
 import java.io.RandomAccessFile;
+import android.content.Context;
 
 import static com.davidchiu.ncnncam.Detection.COLORS;
 
@@ -32,6 +34,7 @@ public class Ncnn
     public Vector<String> mLabel = new Vector<>();
     private int imageWidth;
     private int imageHeight;
+    static ArrayList<String> acc_names = new ArrayList<>();
 
 //    public native boolean init(byte[] param, byte[] bin, byte[] words, AssetManager mgr);
     public native boolean init(AssetManager mgr, int[] ids, float[] features);
@@ -40,7 +43,7 @@ public class Ncnn
 
     public native float[] embed(AssetManager mgr, String img_path);
 
-//    public native boolean load_embedding(int[] ids, float[] features);
+    public native boolean load(AssetManager mgr, int[] ids, float[] features);
 
     static {
         System.loadLibrary("ncnn_jni");
@@ -51,36 +54,43 @@ public class Ncnn
         imageWidth = width;
     }
 
-    public boolean initNcnn(Context context) throws IOException
+    public boolean initNcnn(Context context, String root_dir_path) throws IOException
     {
-        String test_dir_path = "/storage/emulated/0/Download/Son";
+//        if (acc_names.size() > 0) {
+//            return true;
+//        }
+//        String test_dir_path = "/storage/emulated/0/Download/Son";
         int feature_size = 128;
-        File dir = new File(test_dir_path);
-        File[] files = dir.listFiles();
+        File dir = new File(root_dir_path);
+        File[] subdirs = dir.listFiles();
         ArrayList<float[]> features = new ArrayList<>();
         List<Integer> ids = new ArrayList<>();
-        for (int i = 0; i < files.length; i++)
+        for (int i = 0; i < subdirs.length; i++)
         {
-            String file_path = test_dir_path + "/" + files[i].getName();
-            Log.d("Files", "FileName: " + file_path);
-            float[] readback=new float[feature_size];
-            try{
-                // read file
-                RandomAccessFile rFile = new RandomAccessFile(file_path, "rw");
-                FileChannel inChannel = rFile.getChannel();
-                ByteBuffer buf_in = ByteBuffer.allocate(feature_size*4);
-                buf_in.clear();
-                inChannel.read(buf_in);
-                buf_in.rewind();
-                buf_in.asFloatBuffer().get(readback);
-                inChannel.close();
+            File[] files = subdirs[i].listFiles();
+            for (int j = 0; j < files.length; j++) {
+                String file_path = root_dir_path + "/" + subdirs[i].getName() + "/" + files[j].getName();
+                Log.d("Files", "FileName: " + file_path);
+                float[] readback=new float[feature_size];
+                try{
+                    // read file
+                    RandomAccessFile rFile = new RandomAccessFile(file_path, "rw");
+                    FileChannel inChannel = rFile.getChannel();
+                    ByteBuffer buf_in = ByteBuffer.allocate(feature_size*4);
+                    buf_in.clear();
+                    inChannel.read(buf_in);
+                    buf_in.rewind();
+                    buf_in.asFloatBuffer().get(readback);
+                    inChannel.close();
 
-                // add to java list
-                features.add(readback);
-                ids.add(0);
-            }
-            catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                    // add to java list
+                    features.add(readback);
+                    ids.add(i);
+                    acc_names.add(getName(root_dir_path + "/" + subdirs[i].getName()));
+                }
+                catch (IOException ex) {
+                    System.err.println(ex.getMessage());
+                }
             }
         }
 
@@ -100,20 +110,22 @@ public class Ncnn
         return init(context.getAssets(), _ids, _features);
     }
 
-    public int getEmbed(Context context, String[] img_paths) {
+    public int getEmbed(Context context, ArrayList<String> img_paths, String new_dir_path, int id) {
         ArrayList<float[]> embed_results = new ArrayList<>();
-        for (int i = 0; i < img_paths.length; i++) {
-            embed_results.add(embed(context.getAssets(), img_paths[i]));
-            LOGGER.i("Embed size %d %d", embed_results.size(), embed_results.get(embed_results.size()-1).length);
-        }
-        File newFile = new File("/storage/emulated/0/Download/Son");
-        if (!newFile.isDirectory()) {
-            newFile.mkdir();
+        LOGGER.i("IMG_PATH size %s", img_paths.size());
+        int feature_size = 128;
+        for (int i = 0; i < img_paths.size(); i++) {
+            float[] e_res = embed(context.getAssets(), img_paths.get(i));
+            if (e_res.length == feature_size) {
+                embed_results.add(e_res);
+            }
+            LOGGER.i("IMG_PATH %s", img_paths.get(i));
+//            LOGGER.i("Embed size %d %d", embed_results.size(), embed_results.get(embed_results.size()-1).length);
         }
 
         //WRITE to file
         for (int i = 0; i < embed_results.size(); i++) {
-            String new_face_path = "/storage/emulated/0/Download/Son" + "/" + i + ".bin";
+            String new_face_path = new_dir_path + "/" + i + ".bin";
             float[] embed_vector = embed_results.get(i);
             try {
                 File newFaceFile = new File(new_face_path);
@@ -135,7 +147,33 @@ public class Ncnn
                 System.err.println(ex.getMessage());
             }
         }
-        return 0;
+
+        int[] _ids = new int[embed_results.size()];
+        for (int i = 0; i < embed_results.size(); i++) {
+            _ids[i] = id;
+        }
+        float[] _features = new float[embed_results.size() * feature_size];
+        for (int i = 0; i < embed_results.size(); i++) {
+            for (int j = 0; j < feature_size; j++) {
+                _features[i * feature_size + j] = embed_results.get(i)[j];
+            }
+        }
+        if (load(context.getAssets(), _ids, _features)) {
+            // get new name
+            String cur_name = getName(new_dir_path);
+            acc_names.add(cur_name);
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
+
+    public String getName(String full_path) {
+        String[] parts = full_path.split("/");
+        String last_part = parts[parts.length -1];
+        String[] name_parts = last_part.split("_");
+        return name_parts[name_parts.length - 1];
     }
 
     public List<Detection> detect(Bitmap image) {
@@ -153,8 +191,8 @@ public class Ncnn
         if (ncnnArray == null || ncnnArray.length<=0 || ncnnArray[0]<=0) {
             return  null;
         }
-        List<String> names = new ArrayList<>();
-        names.add("Son");
+//        List<String> names = new ArrayList<>();
+//        names.add("Son");
         int nItems = (int)((ncnnArray.length-1)/ncnnArray[0]);
         int nParams = (int)ncnnArray[0];
         for (int i = 0; i < nItems; i++) {
@@ -170,7 +208,9 @@ public class Ncnn
                 recognition.title = "new";
             }
             else {
-                recognition.title = names.get(recognition.id);
+                Log.i("ALL_NAME", "" + acc_names.size() + " " + recognition.id);
+                Log.i("ALL_ACC_NAME", "" + acc_names);
+                recognition.title = acc_names.get(recognition.id);
             }
 //            recognition.title = id;
             recognition.detectionConfidence = ncnnArray[i*nParams+2];

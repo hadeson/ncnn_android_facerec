@@ -40,11 +40,24 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import android.content.Intent;
+import android.provider.MediaStore;
+import java.io.File;
+import android.os.Bundle;
+import java.io.FileOutputStream;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import android.os.Environment;
+import java.io.IOException;
+import android.net.Uri;
+import android.support.v4.content.FileProvider;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
@@ -97,18 +110,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
   private byte[] luminanceCopy;
 
-//  public static final String NCNN_PARAM_FILE = "mobilenet_yolo.param.bin";
-//  public static final String NCNN_WEIGHTS_FILE = "mobilenet_yolo.bin";
-//  public static final String NCNN_PARAM_FILE = "yolov2-tiny.param.bin";
-//  public static final String NCNN_WEIGHTS_FILE = "yolov2-tiny.bin";
-//  public static final String NCNN_LABEL_FILE = "labelcoco20.txt";
 
-//  private String ncnnParamFile;
-//  private String ncnnWeightsFile;
-//  private String ncnnLabelFile;
-
-//  public static final int NCNN_YOLO_WIDTH = 416;
-//  public static final int NCNN_YOLO_HEIGHT = 416;
 //  public static final int NCNN_YOLO_WIDTH = 320;
 //  public static final int NCNN_YOLO_HEIGHT = 240;
     public static final int NCNN_YOLO_WIDTH = 640;
@@ -121,8 +123,116 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private  BorderedText borderedText=null;
   public int cropWidth;          //width and height for image input to model
   public int cropHeight;
+  static int total_acc_num = 0;
+  static String cur_new_dir_path;
 
-    //private BorderedText borderedText;
+    public void addFace(View view) {
+        EditText text = (EditText)findViewById(R.id.editText);
+        String edit_text_val = text.getText().toString();
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String root_dir_path = storageDir.getAbsolutePath() + "/face_embed";
+        File rootDir = new File(root_dir_path);
+        if (!rootDir.isDirectory()) {
+            rootDir.mkdir();
+        }
+        total_acc_num = rootDir.listFiles().length;
+        LOGGER.d("Total acc: " + total_acc_num);
+        if (dispatchTakePictureIntent()) {
+            LOGGER.d("Add Face Button, img: " + currentPhotoPath);
+            LOGGER.d("Edit text val: " + edit_text_val);
+            if (!edit_text_val.equals("")) {
+                String new_dir_path = root_dir_path+"/"+total_acc_num+"_"+edit_text_val;
+                File newDir = new File(new_dir_path);
+                if (!newDir.isDirectory()) {
+                    newDir.mkdir();
+//                    currentPhotoPath.clear();
+//                    currentPhotoPath.add("/storage/emulated/0/Android/data/com.davidchiu.ncnncam/files/Pictures/JPEG_20200216_170739_8576944262220727347.jpg");
+//                    currentPhotoPath.add("/storage/emulated/0/Dcim/Camera/IMG_20200212_171659.jpg");
+
+                    cur_new_dir_path = new_dir_path;
+//                    detector.getEmbed(this, currentPhotoPath, new_dir_path, total_acc_num);
+
+//                    total_acc_num += 1;
+                }
+                else {
+                    currentPhotoPath.clear();
+                }
+            }
+        }
+        else {
+            LOGGER.d("Add Face Button, FAILED");
+        }
+    }
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+    static final int total_pic_cap = 1;
+
+    private boolean dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+//            File photoFile = null;
+            ArrayList<File> photoFile = new ArrayList<>();
+            try {
+                photoFile = createImageFile(total_pic_cap);
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                for (int i = 0; i < total_pic_cap; i++) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+//                            "com.example.android.fileprovider",
+                            "com.davidchiu.ncnncam.fileprovider",
+                            photoFile.get(i));
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+                return true;
+            }
+            else return false;
+        }
+        else return false;
+    }
+
+    static ArrayList<String> currentPhotoPath = new ArrayList<>();
+    private ArrayList<File> createImageFile(int img_num) throws IOException {
+        // Create an image file name
+
+        currentPhotoPath.clear();
+        ArrayList<File> result = new ArrayList<>();
+        for (int i = 0; i < img_num; i++) {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath.add(image.getAbsolutePath());
+            result.add(image);
+        }
+
+        return result;
+    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+//            Bundle extras = data.getExtras();
+//            Bitmap imageBitmap = (Bitmap) extras.get("data");
+//            try (FileOutputStream out = new FileOutputStream(filename)) {
+////                bmp.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
+//                // PNG is a lossless format, the compression factor (100) is ignored
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
       final float textSizePx =
@@ -153,17 +263,28 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
       try {
         detector = new Ncnn();
         detector.setImageSize(size.getWidth(), size.getHeight());
-        String[] test_img_path = {
-            "/storage/emulated/0/Dcim/Camera/IMG_20200130_152037.jpg",
-            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171702.jpg",
-            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171659.jpg",
-            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171656.jpg",
-            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171654.jpg",
-            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171652.jpg",
-            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171648.jpg",
-        };
+//        String[] test_img_path = {
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200130_152037.jpg",
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171702.jpg",
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171659.jpg",
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171656.jpg",
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171654.jpg",
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171652.jpg",
+//            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171648.jpg",
+//        };
 //        detector.getEmbed(this, test_img_path);
-        detector.initNcnn(this);
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String root_dir_path = storageDir.getAbsolutePath() + "/face_embed";
+        File rootDir = new File(root_dir_path);
+        if (!rootDir.isDirectory()) {
+          rootDir.mkdir();
+        }
+        detector.initNcnn(this, root_dir_path);
+        if (currentPhotoPath.size() > 0) {
+            detector.getEmbed(this, currentPhotoPath, cur_new_dir_path, total_acc_num);
+            total_acc_num += 1;
+            currentPhotoPath.clear();
+        }
         //cropSize = TF_OD_API_INPUT_SIZE;
       } catch (final Exception e) {
         //LOGGER.e("Exception initializing classifier!", e);

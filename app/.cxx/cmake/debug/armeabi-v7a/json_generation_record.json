@@ -1,11 +1,11 @@
 [
   {
     "level": "INFO",
-    "message": "Start JSON generation. Platform version: 24 min SDK version: armeabi-v7a"
+    "message": "Start JSON generation. Platform version: 28 min SDK version: armeabi-v7a"
   },
   {
     "level": "INFO",
-    "message": "JSON \u0027/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a/android_gradle_build.json\u0027 was up-to-date"
+    "message": "JSON \u0027C:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\.cxx\\cmake\\debug\\armeabi-v7a\\android_gradle_build.json\u0027 was up-to-date"
   },
   {
     "level": "INFO",

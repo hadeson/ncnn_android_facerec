@@ -43,6 +43,9 @@ import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Toast;
 import java.nio.ByteBuffer;
+import android.widget.Button;
+import android.view.View;
+
 
 public abstract class CameraActivity extends Activity
     implements OnImageAvailableListener, Camera.PreviewCallback {
@@ -83,7 +86,6 @@ public abstract class CameraActivity extends Activity
       requestPermission();
     }
   }
-
 
   protected int[] getRgbBytes() {
     long lasttime = SystemClock.uptimeMillis();

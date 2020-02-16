@@ -142,19 +142,13 @@ void Detector::Detect(ncnn::Mat& in, std::vector<bbox>& boxes)
 void Detector::face_align(cv::Mat& face, bbox face_box) {
     // construct source matrix
 
-    int point_num = 3;
+    int point_num = 5;
     cv::Point2f dst[point_num];
     dst[0] = cv::Point2f(38.2946, 51.6963);
     dst[1] = cv::Point2f(73.5318, 51.5014);
     dst[2] = cv::Point2f(56.0252, 71.7366);
-//    dst[3] = cv::Point2f(41.5493, 92.3655);
-//    dst[4] = cv::Point2f(70.7299, 92.2041);
-
-//    dst[0] = cv::Point2f(30.2946, 51.6963);
-//    dst[1] = cv::Point2f(65.5318, 51.5014);
-//    dst[2] = cv::Point2f(48.0252, 71.7366);
-//    dst[3] = cv::Point2f(33.5493, 92.3655);
-//    dst[4] = cv::Point2f(62.7299, 92.2041);
+    dst[3] = cv::Point2f(41.5493, 92.3655);
+    dst[4] = cv::Point2f(70.7299, 92.2041);
     cv::Point2f src[point_num];
     for (int i = 0; i < point_num; i++) {
         src[i] = cv::Point2f(face_box.point[i]._x, face_box.point[i]._y);
