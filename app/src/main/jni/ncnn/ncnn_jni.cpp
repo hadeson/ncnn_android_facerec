@@ -64,6 +64,7 @@ std::string align_face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_1238
 //std::string resize_face_img = "/storage/emulated/0/Dcim/Camera/SAVE_20200212_123851.jpg";
 std::string resize_full_img = "/storage/emulated/0/Download/full.png";
 std::string resize_face_img = "/storage/emulated/0/Download/face.png";
+std::string face_img_ori = "/storage/emulated/0/Download/face_ori.png";
 
 
 #define NCNNJNI_METHOD(METHOD_NAME) \
@@ -103,7 +104,7 @@ JNIEXPORT jarray JNICALL  NCNNJNI_METHOD(embed)(JNIEnv* env, jobject thiz, jobje
     ori_height = cv_img_mat.rows;
     cv::Mat cv_img_mat_rs;
     cv::Size new_size(width, height);
-    cv::resize(cv_img_mat, cv_img_mat_rs, new_size);
+    cv::resize(cv_img_mat, cv_img_mat_rs, new_size, cv::INTER_AREA);
     __android_log_print(ANDROID_LOG_DEBUG, "EMBED cv resize", "width: %d, height: %d", cv_img_mat_rs.cols, cv_img_mat_rs.rows);
     cv::imwrite(resize_full_img, cv_img_mat_rs);
     ncnn::Mat ncnn_img_mat = ncnn::Mat::from_pixels_resize(cv_img_mat_rs.data, ncnn::Mat::PIXEL_BGR,
@@ -153,9 +154,10 @@ JNIEXPORT jarray JNICALL  NCNNJNI_METHOD(embed)(JNIEnv* env, jobject thiz, jobje
     }
     __android_log_print(ANDROID_LOG_DEBUG, "EMBED cv", "before rect");
     cv_face = cv_img_mat(cv::Rect(cv_x1, cv_y1, face_width, face_height)).clone();
-    cv::resize(cv_face, cv_face_rs, face_size);
-    cv::imwrite(resize_face_img, cv_face);
+    cv::imwrite(face_img_ori, cv_face);
+    cv::resize(cv_face, cv_face_rs, face_size, cv::INTER_AREA);
     detector.face_align(cv_face_rs, boxes[max_box_id]);
+    cv::imwrite(resize_face_img, cv_face_rs);
     ncnn_face = ncnn::Mat::from_pixels_resize(cv_face_rs.data, ncnn::Mat::PIXEL_RGB, 112, 112,
                                               112, 112);
 //    __android_log_print(ANDROID_LOG_DEBUG, "face size ncnn", "width: %d, height: %d",

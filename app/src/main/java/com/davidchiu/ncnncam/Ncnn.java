@@ -25,6 +25,7 @@ import java.nio.channels.FileChannel;
 import java.nio.ByteBuffer;
 import java.io.RandomAccessFile;
 import android.content.Context;
+import java.util.Arrays;
 
 import static com.davidchiu.ncnncam.Detection.COLORS;
 
@@ -63,6 +64,7 @@ public class Ncnn
         int feature_size = 128;
         File dir = new File(root_dir_path);
         File[] subdirs = dir.listFiles();
+        Arrays.sort(subdirs);
         ArrayList<float[]> features = new ArrayList<>();
         List<Integer> ids = new ArrayList<>();
         for (int i = 0; i < subdirs.length; i++)
@@ -86,12 +88,12 @@ public class Ncnn
                     // add to java list
                     features.add(readback);
                     ids.add(i);
-                    acc_names.add(getName(root_dir_path + "/" + subdirs[i].getName()));
                 }
                 catch (IOException ex) {
                     System.err.println(ex.getMessage());
                 }
             }
+            acc_names.add(getName(root_dir_path + "/" + subdirs[i].getName()));
         }
 
         // parse to c++
@@ -110,7 +112,7 @@ public class Ncnn
         return init(context.getAssets(), _ids, _features);
     }
 
-    public int getEmbed(Context context, ArrayList<String> img_paths, String new_dir_path, int id) {
+    public boolean getEmbed(Context context, ArrayList<String> img_paths, String new_dir_path, int id) {
         ArrayList<float[]> embed_results = new ArrayList<>();
         LOGGER.i("IMG_PATH size %s", img_paths.size());
         int feature_size = 128;
@@ -162,10 +164,12 @@ public class Ncnn
             // get new name
             String cur_name = getName(new_dir_path);
             acc_names.add(cur_name);
-            return 0;
+            LOGGER.i("New name %s", cur_name);
+            return true;
         }
         else {
-            return 1;
+            LOGGER.i("New name FAILED");
+            return false;
         }
     }
 

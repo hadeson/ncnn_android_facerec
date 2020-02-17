@@ -14,7 +14,7 @@
 
 Detector::Detector():
         _nms(0.4),
-        _threshold(0.75),
+        _threshold(0.6),
         _mean_val{104.f, 117.f, 123.f},
         _loaded(false),
         Net(new ncnn::Net())
@@ -31,7 +31,7 @@ inline void Detector::Release(){
 
 Detector::Detector(const std::string &model_bin, JNIEnv* env, jobject assetManager):
         _nms(0.4),
-        _threshold(0.75),
+        _threshold(0.6),
         _mean_val{104.f, 117.f, 123.f},
         _loaded(false),
         Net(new ncnn::Net())

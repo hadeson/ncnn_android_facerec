@@ -1,12 +1,9 @@
 
 {
-	"buildFiles" : 
-	[
-		"C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/CMakeLists.txt"
-	],
+	"buildFiles" : [ "/home/sonct/dev/NCNNCam/app/src/main/jni/CMakeLists.txt" ],
 	"cleanCommands" : 
 	[
-		"C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target clean"
+		"/home/sonct/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a --target clean"
 	],
 	"cppFileExtensions" : [ "cc", "cpp" ],
 	"libraries" : 
@@ -16,286 +13,286 @@
 			"abi" : "armeabi-v7a",
 			"artifactName" : "IlmImf",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libIlmImf.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libIlmImf.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"imgutil-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "imgutil",
-			"buildCommand" : "C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target imgutil",
+			"buildCommand" : "/home/sonct/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a --target imgutil",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
-					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dimgutil_EXPORTS -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni\\ncnn\\include -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/imageutils_jni.cc",
-					"workingDirectory" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a"
+					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dimgutil_EXPORTS -I/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/include -I/home/sonct/dev/NCNNCam/app/src/main/jni  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/sonct/dev/NCNNCam/app/src/main/jni/imageutils_jni.cc",
+					"workingDirectory" : "/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a"
 				},
 				
 				{
-					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dimgutil_EXPORTS -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni\\ncnn\\include -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/rgb2yuv.cc",
-					"workingDirectory" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a"
+					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dimgutil_EXPORTS -I/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/include -I/home/sonct/dev/NCNNCam/app/src/main/jni  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/sonct/dev/NCNNCam/app/src/main/jni/rgb2yuv.cc",
+					"workingDirectory" : "/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a"
 				},
 				
 				{
-					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dimgutil_EXPORTS -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni\\ncnn\\include -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/yuv2rgb.cc",
-					"workingDirectory" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a"
+					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dimgutil_EXPORTS -I/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/include -I/home/sonct/dev/NCNNCam/app/src/main/jni  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/sonct/dev/NCNNCam/app/src/main/jni/yuv2rgb.cc",
+					"workingDirectory" : "/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a"
 				}
 			],
-			"output" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libimgutil.so",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libimgutil.so",
+			"toolchain" : "8463517365587078806"
 		},
 		"ittnotify-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "ittnotify",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libittnotify.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libittnotify.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libcpufeatures-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libcpufeatures",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libcpufeatures.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libcpufeatures.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libjasper-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libjasper",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibjasper.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibjasper.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libjpeg-turbo-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libjpeg-turbo",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibjpeg-turbo.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibjpeg-turbo.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libpng-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libpng",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibpng.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibpng.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libprotobuf-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libprotobuf",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibprotobuf.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibprotobuf.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libtiff-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libtiff",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibtiff.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibtiff.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"libwebp-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "libwebp",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibwebp.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/liblibwebp.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"ncnn-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "ncnn",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/ncnn/armeabi-v7a/libncnn.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/armeabi-v7a/libncnn.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"ncnn_jni-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "ncnn_jni",
-			"buildCommand" : "C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.4111459\\bin\\cmake.exe --build C:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\.cxx\\cmake\\debug\\armeabi-v7a --target ncnn_jni",
+			"buildCommand" : "/home/sonct/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a --target ncnn_jni",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
-					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dncnn_jni_EXPORTS -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni\\ncnn\\include -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni -isystem C:\\Users\\caoth\\github_repos\\OpenCV-android-sdk\\sdk\\native\\jni\\include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/ncnn/MobileFaceNet.cpp",
-					"workingDirectory" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a"
+					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dncnn_jni_EXPORTS -I/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/include -I/home/sonct/dev/NCNNCam/app/src/main/jni -isystem /home/sonct/setup/OpenCV-android-sdk/sdk/native/jni/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/MobileFaceNet.cpp",
+					"workingDirectory" : "/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a"
 				},
 				
 				{
-					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dncnn_jni_EXPORTS -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni\\ncnn\\include -IC:\\Users\\caoth\\github_repos\\ncnn_android_facerec\\app\\src\\main\\jni -isystem C:\\Users\\caoth\\github_repos\\OpenCV-android-sdk\\sdk\\native\\jni\\include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/src/main/jni/ncnn/ncnn_jni.cpp",
-					"workingDirectory" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a"
+					"flags" : "  --target=armv7-none-linux-androideabi28 --gcc-toolchain=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -DHEADER_FILE=\"\" -DNAMESPACE=\"\" -DNCNN_INPUT=\"\" -DNCNN_OUTPUT=\"\" -Dncnn_jni_EXPORTS -I/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/include -I/home/sonct/dev/NCNNCam/app/src/main/jni -isystem /home/sonct/setup/OpenCV-android-sdk/sdk/native/jni/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security   -mfloat-abi=softfp -mfpu=neon -fopenmp -static-openmp -fomit-frame-pointer -fstrict-aliasing -ffast-math -fvisibility=hidden -fvisibility-inlines-hidden -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/sonct/dev/NCNNCam/app/src/main/jni/ncnn/ncnn_jni.cpp",
+					"workingDirectory" : "/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a"
 				}
 			],
-			"output" : "C:/Users/caoth/github_repos/ncnn_android_facerec/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libncnn_jni.so",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/dev/NCNNCam/app/build/intermediates/cmake/debug/obj/armeabi-v7a/libncnn_jni.so",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_calib3d-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_calib3d",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_calib3d.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_calib3d.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_core-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_core",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_core.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_core.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_dnn-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_dnn",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_dnn.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_dnn.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_features2d-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_features2d",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_features2d.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_features2d.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_flann-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_flann",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_flann.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_flann.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_highgui-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_highgui",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_highgui.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_highgui.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_imgcodecs-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_imgcodecs",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_imgcodecs.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_imgcodecs.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_imgproc-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_imgproc",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_imgproc.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_imgproc.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_java-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_java",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/libs/armeabi-v7a/libopencv_java4.so",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/libs/armeabi-v7a/libopencv_java4.so",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_ml-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_ml",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_ml.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_ml.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_objdetect-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_objdetect",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_objdetect.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_objdetect.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_photo-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_photo",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_photo.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_photo.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_stitching-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_stitching",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_stitching.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_stitching.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_video-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_video",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_video.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_video.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"opencv_videoio-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "opencv_videoio",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_videoio.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/staticlibs/armeabi-v7a/libopencv_videoio.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"quirc-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "quirc",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libquirc.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libquirc.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"tbb-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "tbb",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libtbb.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libtbb.a",
+			"toolchain" : "8463517365587078806"
 		},
 		"tegra_hal-Debug-armeabi-v7a" : 
 		{
 			"abi" : "armeabi-v7a",
 			"artifactName" : "tegra_hal",
 			"buildType" : "debug",
-			"output" : "C:/Users/caoth/github_repos/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libtegra_hal.a",
-			"toolchain" : "934450805"
+			"output" : "/home/sonct/setup/OpenCV-android-sdk/sdk/native/3rdparty/libs/armeabi-v7a/libtegra_hal.a",
+			"toolchain" : "8463517365587078806"
 		}
 	},
 	"toolchains" : 
 	{
-		"934450805" : 
+		"8463517365587078806" : 
 		{
-			"cCompilerExecutable" : "C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang.exe",
-			"cppCompilerExecutable" : "C:/Users/caoth/AppData/Local/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/windows-x86_64/bin/clang++.exe"
+			"cCompilerExecutable" : "/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/home/sonct/Android/Sdk/ndk/21.0.6113669/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
 		}
 	}
 }

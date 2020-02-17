@@ -1,5 +1,5 @@
 {
-  "ndkFolder": "C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk\\ndk-bundle",
+  "ndkFolder": "/home/sonct/Android/Sdk/ndk/21.0.6113669",
   "messages": [
     {
       "level": "INFO",
@@ -15,15 +15,23 @@
     },
     {
       "level": "INFO",
-      "message": "sdkFolder is C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk"
+      "message": "sdkFolder is /home/sonct/Android/Sdk"
     },
     {
       "level": "INFO",
-      "message": "Considering C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk\\ndk-bundle in SDK ndk-bundle folder"
+      "message": "Considering /home/sonct/Android/Sdk/ndk-bundle in SDK ndk-bundle folder"
     },
     {
       "level": "INFO",
-      "message": "No user requested version, choosing C:\\Users\\caoth\\AppData\\Local\\Android\\Sdk\\ndk-bundle which is version 21.0.6113669"
+      "message": "Considering /home/sonct/Android/Sdk/ndk/21.0.6113669 in SDK ndk folder"
+    },
+    {
+      "level": "INFO",
+      "message": "Rejected /home/sonct/Android/Sdk/ndk-bundle in SDK ndk-bundle folder because that location has no source.properties"
+    },
+    {
+      "level": "INFO",
+      "message": "No user requested version, choosing /home/sonct/Android/Sdk/ndk/21.0.6113669 which is version 21.0.6113669"
     }
   ]
 }

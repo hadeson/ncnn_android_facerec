@@ -23,6 +23,7 @@
 
 package com.davidchiu.ncnncam;
 
+import android.content.pm.ResolveInfo;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -58,6 +59,7 @@ import android.os.Environment;
 import java.io.IOException;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.content.pm.PackageManager;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
@@ -165,7 +167,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     }
 
     static final int REQUEST_TAKE_PHOTO = 1;
-    static final int total_pic_cap = 1;
+    static final int total_pic_cap = 3;
 
     private boolean dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -186,6 +188,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 //                            "com.example.android.fileprovider",
                             "com.davidchiu.ncnncam.fileprovider",
                             photoFile.get(i));
+                    List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(takePictureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                    for (ResolveInfo resolveInfo : resInfoList) {
+                        String packageName = resolveInfo.activityInfo.packageName;
+                        grantUriPermission(packageName, photoURI, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
@@ -272,7 +279,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 //            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171652.jpg",
 //            "/storage/emulated/0/Dcim/Camera/IMG_20200212_171648.jpg",
 //        };
-//        detector.getEmbed(this, test_img_path);
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         String root_dir_path = storageDir.getAbsolutePath() + "/face_embed";
         File rootDir = new File(root_dir_path);
@@ -281,8 +287,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         }
         detector.initNcnn(this, root_dir_path);
         if (currentPhotoPath.size() > 0) {
-            detector.getEmbed(this, currentPhotoPath, cur_new_dir_path, total_acc_num);
-            total_acc_num += 1;
+//            currentPhotoPath.clear();
+//            currentPhotoPath.add("/storage/emulated/0/Dcim/Camera/SAVE_20200217_144431.jpg");
+            if (detector.getEmbed(this, currentPhotoPath, cur_new_dir_path, total_acc_num)) {
+                total_acc_num += 1;
+            }
+            else {
+                File cur_new_dir = new File(cur_new_dir_path);
+                cur_new_dir.delete();
+            }
             currentPhotoPath.clear();
         }
         //cropSize = TF_OD_API_INPUT_SIZE;

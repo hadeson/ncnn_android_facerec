@@ -1,4 +1,4 @@
-C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/imgutil.dir
-C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/ncnn_jni.dir
-C:/Users/caoth/github_repos/ncnn_android_facerec/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/ncnn_jni.dir
+/home/sonct/dev/NCNNCam/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/imgutil.dir
